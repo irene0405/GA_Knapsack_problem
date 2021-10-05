@@ -4,9 +4,9 @@
 #include <iomanip>
 #include <chrono>
 
-#define POPULATION 800
-#define GENERATION 500
-#define ROUND 100
+#define POPULATION 100
+#define GENERATION 100
+#define ROUND 10
 #define CROSSOVER_RATE 0.5
 #define MUTATION_RATE 0.5
 
@@ -49,6 +49,8 @@ void initialize() {
 
 void calcFitness() {
     for (int i = 0; i < POPULATION; i++) {
+        individual[i].weight = 0;
+        individual[i].fitness = 0;
         int weight = 0;
         int value = weight + 5;
         for (int j = 0; j < 100; j++) {
@@ -167,8 +169,6 @@ int main() {
     auto start = chrono::steady_clock::now();
 
     for (int j = 0; j < ROUND; j++) {
-        cout << "Round: " << j + 1 << " / " << ROUND << endl;
-
         initialize();
         for (int i = 0; i < GENERATION; i++) {
             calcFitness();
@@ -191,6 +191,8 @@ int main() {
             count_under_600++;
         }
         total += best.fitness;
+
+        cout << "Round: " << j + 1 << " / " << ROUND << " --- " << best.weight << " " << best.fitness << endl;
     }
 
     cout << endl << "      620: " << setw(2) << count_620 << " time(s)";
