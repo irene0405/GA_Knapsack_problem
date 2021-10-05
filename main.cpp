@@ -9,6 +9,7 @@
 #define ROUND 10
 #define CROSSOVER_RATE 0.5
 #define MUTATION_RATE 0.5
+#define MUTATE_POINT 1  // The number of the mutate point
 
 using namespace std;
 
@@ -152,12 +153,15 @@ void crossover() {
 }
 
 void mutate() {
+    int position;
     for (int i = 0; i < POPULATION; i++) {
         if (((random(0, 100) / 100.0)) > MUTATION_RATE) {
             continue;
         }
-        int position = random(0, 99);
-        individual[i].gene[position] = 1 - individual[i].gene[position];
+        for (int j = 0; j < MUTATE_POINT; j++) {
+            position = random(0, 99);
+            individual[i].gene[position] = 1 - individual[i].gene[position];
+        }
     }
 }
 
