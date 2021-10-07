@@ -1,12 +1,13 @@
 #include <iostream>
+#include <fstream>
 #include <random>
 #include <cstring>
 #include <iomanip>
 #include <chrono>
 
-#define POPULATION 100
+#define ROUND 100
 #define GENERATION 100
-#define ROUND 10
+#define POPULATION 100
 #define CROSSOVER_RATE 0.5
 #define MUTATION_RATE 0.5
 #define MUTATE_POINT 1  // The number of the mutate point
@@ -139,8 +140,8 @@ void crossover() {
             i2 = random(0, POPULATION - 1);
         } while (i1 == i2);
 
+        int crossoverPosition = random(0, 99);
         for (int j = 0; j < 100; j++) {
-            int crossoverPosition = random(0, 99);
             if (j < crossoverPosition) {
                 individual[i].gene[j] = pool[i1].gene[j];
                 individual[i + 1].gene[j] = pool[i2].gene[j];
@@ -167,10 +168,20 @@ void mutate() {
 
 int main() {
     int count_620 = 0, count_615 = 0, count_610 = 0, count_605 = 0, count_600 = 0, count_under_600 = 0;
-    int total = 0;
+    int best_value = INT_MIN, worst_value = INT_MAX, total = 0;
 
     // count execution time
     auto start = chrono::steady_clock::now();
+
+    ofstream ofs;
+    ofs.open("GA_Knapsack_problem-output.txt");
+    ofs << "Round: " << ROUND << endl;
+    ofs << "Generation: " << GENERATION << endl;
+    ofs << "Population: " << POPULATION << endl;
+    ofs << "Crossover rate: " << CROSSOVER_RATE << endl;
+    ofs << "Mutation rate: " << MUTATION_RATE << endl;
+    ofs << "Mutation type: " << MUTATE_POINT << " point(s)" << endl;
+    ofs << "============================" << endl;
 
     for (int j = 0; j < ROUND; j++) {
         initialize();
@@ -195,21 +206,30 @@ int main() {
             count_under_600++;
         }
         total += best.fitness;
-
-        cout << "Round: " << j + 1 << " / " << ROUND << " --- " << best.weight << " " << best.fitness << endl;
+        if (best.fitness > best_value) {
+            best_value = best.fitness;
+        } else if (best.fitness < worst_value) {
+            worst_value = best.fitness;
+        }
+        ofs << "Round: " << j + 1 << " / " << ROUND << " --- " << best.fitness << endl;
     }
-
-    cout << endl << "      620: " << setw(2) << count_620 << " time(s)";
-    cout << endl << "615 ~ 620: " << setw(2) << count_615 << " time(s)";
-    cout << endl << "610 ~ 615: " << setw(2) << count_610 << " time(s)";
-    cout << endl << "605 ~ 610: " << setw(2) << count_605 << " time(s)";
-    cout << endl << "600 ~ 605: " << setw(2) << count_600 << " time(s)";
-    cout << endl << "under 600: " << setw(2) << count_under_600 << " time(s)" << endl;
-    cout << endl << "Average value: " << (float) total / ROUND << endl;
+    ofs << "============================" << endl;
+    ofs << "      620 :" << setw(3) << count_620 << " time(s)" << endl;
+    ofs << "[615, 620):" << setw(3) << count_615 << " time(s)" << endl;
+    ofs << "[610, 615):" << setw(3) << count_610 << " time(s)" << endl;
+    ofs << "[605, 610):" << setw(3) << count_605 << " time(s)" << endl;
+    ofs << "[600, 605):" << setw(3) << count_600 << " time(s)" << endl;
+    ofs << "under 600 :" << setw(3) << count_under_600 << " time(s)" << endl;
+    ofs << "============================" << endl;
+    ofs << "Average value: " << (float) total / ROUND << endl;
+    ofs << "Worst value: " << worst_value << endl;
+    ofs << "Best value: " << best_value << endl;
+    ofs << "============================" << endl;
 
     // count execution time
     auto end = chrono::steady_clock::now();
-    cout << endl << "Time taken: " << chrono::duration<double>(end - start).count() << " s" << endl;
+    cout << "Time taken: " << chrono::duration<double>(end - start).count() << " s" << endl;
 
-    return 0;
+    ofs << "Time taken: " << chrono::duration<double>(end - start).count() << " s" << endl;
+    ofs.close();
 }
