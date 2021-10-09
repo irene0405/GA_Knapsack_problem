@@ -17,7 +17,7 @@
 * Find
   * a set of items
 
-* Best known solution
+* Actual optimal solution set
   * Overall weight equal to 275
   * Overall value (fitness) equal to 620
   * | Item    | A   | B   | C   | D   | E   | F   | G   | H   | I   | J   |
