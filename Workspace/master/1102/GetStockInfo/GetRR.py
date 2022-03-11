@@ -3,11 +3,11 @@ import numpy as np
 import time
 import os
 
-dir_name = './DJIA_CNBC_from 2019.04.01 to 2019.05.01/'
+date_dir_name = './DJIA_CNBC_from 2019-4-1 to 2019-5-1/'
 
 DJIA = []
 
-for filename in os.listdir(dir_name):
+for filename in os.listdir(date_dir_name):
     if filename != '.DS_Store':
         DJIA.append(filename)
     # print(DJIA)
@@ -16,8 +16,7 @@ for filename in os.listdir(dir_name):
 def make_datasets(export_dir, export_file):
     export_flag = 1
     for stock in DJIA:
-        print(stock)
-        df = pd.read_csv(dir_name + stock)
+        df = pd.read_csv(date_dir_name + stock)
 
         close_price = list(df.loc[:, 'Adj Close'])
         num_days = len(close_price)
